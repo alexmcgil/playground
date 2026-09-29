@@ -53,6 +53,7 @@ export function RuntimePage() {
         throw new Error('Сервер вернул некорректный результат');
       }
       if (mode === 'browser') {
+        // LAB: bounded CPU work after the HTTP response blocks the browser's main thread.
         const processingStarted = performance.now();
         while (performance.now() - processingStarted < 2500) Math.sqrt(Math.random());
       }
@@ -65,30 +66,44 @@ export function RuntimePage() {
   }
 
   return <>
-    <p className="eyebrow">02 / Генерация</p>
-    <h1>Генератор идей</h1>
-    <p className="lead">Генерация текста по вашему запросу.</p>
+    <p className="eyebrow">Кейс 02 / JavaScript и время</p>
+    <h1>Почему всё зависло?</h1>
+    <p className="lead">Одна генерация, три режима. Проверьте, что происходит с интерфейсом и соседними запросами, пока вы ждёте результат.</p>
     <div className="metrics">
       <div><span>Таймер браузера · шаги по 100 мс</span><strong data-testid="ticks">{ticks}</strong></div>
       <div><span>Последний ответ /health</span><strong data-testid="health">{health}</strong><small>Максимум: {peakHealth} мс · сброс при генерации</small></div>
       <div><span>Проверка отзывчивости</span><button onClick={() => setClicks((value) => value + 1)}>Кликов: {clicks}</button></div>
     </div>
-    <section className="panel">
-      <div className="panel-heading"><h2>Генератор идей</h2><span className="badge">локальная заглушка</span></div>
-      <form onSubmit={(event) => { event.preventDefault(); void generate(); }}>
-        <label htmlFor="runtime-mode">Режим</label>
-        <select id="runtime-mode" value={mode} disabled={busy} onChange={(event) => setMode(event.target.value)}>
-          <option value="normal">Обычный режим</option>
-          <option value="server">Эксперимент 1</option>
-          <option value="browser">Эксперимент 2</option>
-        </select>
-        <label htmlFor="prompt">О чём придумать идею?</label>
-        <textarea id="prompt" rows={3} maxLength={2000} required value={prompt} disabled={busy}
-          onChange={(event) => setPrompt(event.target.value)} />
-        <button className="primary" disabled={busy || !prompt.trim()}>{busy ? 'Генерируем…' : 'Сгенерировать'}</button>
-      </form>
-      <div className="result" role="status">{result || (busy ? 'Ждём результат…' : 'Здесь появится результат генерации.')}</div>
-      {error && <p role="alert" className="error">{error}</p>}
-    </section>
+    <div className="columns">
+      <section className="panel">
+        <div className="panel-heading"><h2>Генератор идей</h2><span className="badge">локальная заглушка</span></div>
+        <form onSubmit={(event) => { event.preventDefault(); void generate(); }}>
+          <label htmlFor="runtime-mode">Режим</label>
+          <select id="runtime-mode" value={mode} disabled={busy} onChange={(event) => setMode(event.target.value)}>
+            <option value="normal">Рабочий сценарий</option>
+            <option value="server">Эксперимент 1 · медленные запросы</option>
+            <option value="browser">Эксперимент 2 · застывший интерфейс</option>
+          </select>
+          <label htmlFor="prompt">О чём придумать идею?</label>
+          <textarea id="prompt" rows={3} maxLength={2000} required value={prompt} disabled={busy}
+            onChange={(event) => setPrompt(event.target.value)} />
+          <button className="primary" disabled={busy || !prompt.trim()}>{busy ? 'Генерируем…' : 'Сгенерировать'}</button>
+        </form>
+        <div className="result" role="status">{result || (busy ? 'Ждём результат… Попробуйте кнопку счётчика.' : 'Здесь появится результат генерации.')}</div>
+        {error && <p role="alert" className="error">{error}</p>}
+        <p className="note">Каждая задержка ограничена 2,5 секундами. Эксперименты работают только в этом локальном приложении.</p>
+      </section>
+      <aside className="panel exercise">
+        <p className="eyebrow">Попробуйте сами</p><h2>Где тратится время?</h2>
+        <ol>
+          <li>Запустите рабочий режим. Во время ожидания нажимайте на счётчик и смотрите на таймер.</li>
+          <li>Повторите в эксперименте 1. Сравните /generate и /health в Network → Waterfall.</li>
+          <li>Запишите эксперимент 2 в Performance. Совпадает ли конец запроса с появлением результата?</li>
+          <li>До изменения кода объясните, что именно должно продолжать работать во время генерации.</li>
+        </ol>
+        <details><summary>Вопросы для обсуждения</summary><p>Что гарантирует async? Кто ждёт таймер? Где выполняется JavaScript? Чем ожидание отличается от вычисления? Почему сервер и браузер могут зависать независимо?</p>
+          <p>Пауза в дебаггере тоже останавливает выполнение. Сначала измерьте без breakpoint, затем исследуйте стек.</p></details>
+      </aside>
+    </div>
   </>;
 }
