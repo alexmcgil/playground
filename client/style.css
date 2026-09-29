@@ -4,7 +4,6 @@ body { margin: 0; }
 a { color: inherit; }
 .site-header { padding: 25px max(24px, calc((100vw - 1140px) / 2)); background: #fff; border-bottom: 1px solid #dce2da; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 .brand { text-decoration: none; font-size: 22px; font-weight: 800; letter-spacing: -1px; white-space: nowrap; }
-.brand span { color: #63766d; font-weight: 400; font-size: 12px; letter-spacing: 0; }
 nav { display: flex; gap: 8px; }
 nav a { text-decoration: none; font-size: 13px; padding: 12px; border-radius: 8px; }
 nav a[aria-current] { background: #e9f0e6; font-weight: 700; }
@@ -12,9 +11,6 @@ main { max-width: 1188px; padding: 48px 24px; margin: auto; }
 .eyebrow { text-transform: uppercase; letter-spacing: 2px; font-size: 11px; font-weight: 800; color: #507760; }
 h1 { font-size: clamp(32px, 4vw, 48px); line-height: 1.15; letter-spacing: -1.8px; margin: 14px 0; }
 .lead { color: #607169; max-width: 730px; font-size: 16px; line-height: 1.7; margin-bottom: 30px; }
-.flow { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 22px; background: #183e32; color: #edf4dd; border-radius: 12px; margin: 26px 0; font-size: 13px; }
-.flow b { color: #a0c484; }
-.columns { display: grid; grid-template-columns: 1.25fr 1fr; gap: 24px; }
 .panel { border: 1px solid #dce2da; border-radius: 14px; background: #fff; padding: 28px; }
 .panel-heading { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 22px; }
 h2 { font-size: 20px; margin: 0; letter-spacing: -.5px; }
@@ -37,12 +33,6 @@ form > .primary { margin-top: 16px; }
 .note { line-height: 1.7; margin-top: 22px; }
 .status { font-size: 13px; min-height: 20px; line-height: 1.6; }
 .error { font-size: 13px; background: #fff0eb; color: #973d2a; padding: 12px; border-radius: 8px; overflow-wrap: anywhere; }
-.exercise { background: #eef1e7; }
-.exercise .eyebrow { margin-top: 0; }
-ol { padding-left: 21px; }
-li { padding-left: 5px; margin: 20px 0; font-size: 14px; line-height: 1.8; }
-details { border-top: 1px solid #d2dccb; padding-top: 18px; font-size: 13px; line-height: 1.8; }
-summary { cursor: pointer; font-weight: 700; }
 .metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 25px 0; }
 .metrics > div { background: #e7eddf; border: 1px solid #d5dfcd; border-radius: 12px; padding: 20px; }
 .metrics span { display: block; font-size: 12px; color: #5c705e; margin-bottom: 10px; }
@@ -51,10 +41,8 @@ summary { cursor: pointer; font-weight: 700; }
 footer { max-width: 1188px; margin: auto; padding: 0 24px 30px; font-size: 12px; color: #6c7b6e; }
 @media (max-width: 760px) {
   .site-header { flex-direction: column; align-items: flex-start; padding: 20px; }
-  .brand span { display: none; }
   main { padding: 28px 16px; }
-  .columns, .metrics { grid-template-columns: 1fr; }
+  .metrics { grid-template-columns: 1fr; }
   .panel { padding: 22px; }
-  .flow { justify-content: flex-start; }
   .panel-heading { flex-wrap: wrap; }
 }

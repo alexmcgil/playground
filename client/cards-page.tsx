@@ -21,7 +21,6 @@ export function CardsPage() {
     setText('');
     setError('');
     setStatus('Загружаем карточку…');
-    // LAB: experiment 1 intentionally accepts an outdated response.
     const canApply = () => (active || mode === 'race') && current === modeVersion.current;
     request(`${prefix}/cards/${selected}?slow=1`)
       .then(parseCard)
@@ -59,51 +58,35 @@ export function CardsPage() {
   }
 
   return <>
-    <p className="eyebrow">Кейс 01 / браузер → сервер → браузер</p>
-    <h1>Куда ушёл запрос?</h1>
-    <p className="lead">Откройте карточку, измените текст и сохраните. Проследите, как одно действие проходит через всё приложение.</p>
-    <div className="flow" aria-label="Путь запроса">
-      <span>React · fetch</span><b>⇄</b><span>HTTP · сеть</span><b>⇄</b><span>Vite proxy</span><b>⇄</b><span>NestJS</span><b>⇄</b><span>Память сервера</span>
-    </div>
-    <div className="columns">
-      <section className="panel">
-        <div className="panel-heading"><h2>Мои карточки</h2><span className="badge">живой API</span></div>
-        <label htmlFor="cards-mode">Режим</label>
-        <select id="cards-mode" value={mode} disabled={saving} onChange={(event) => {
-          modeVersion.current += 1;
-          setMode(event.target.value);
-        }}>
-          <option value="normal">Рабочий сценарий</option>
-          <option value="race">Эксперимент 1 · не та карточка</option>
-          <option value="dns">Эксперимент 2 · запрос не дошёл</option>
-          <option value="route">Эксперимент 3 · ответ с ошибкой</option>
-        </select>
-        <div className="card-picker" aria-label="Выбор карточки">
-          {['a', 'b'].map((id) => <button key={id} type="button" aria-pressed={selected === id}
-            disabled={saving} onClick={() => setSelected(id)}>Карточка {id === 'a' ? 'А' : 'Б'}</button>)}
-        </div>
-        <form onSubmit={(event) => { event.preventDefault(); void save(); }}>
-          <label htmlFor="card-text">Текст карточки</label>
-          <textarea id="card-text" value={text} required maxLength={2000} rows={6}
-            disabled={loading || saving || !card} onChange={(event) => setText(event.target.value)} />
-          <div className="actions"><button className="primary" disabled={loading || saving || !card || !text.trim()}>
-            {saving ? 'Сохраняем…' : 'Сохранить'}</button><span className="muted">{text.length} / 2000</span></div>
-        </form>
-        <p role="status" className="status">{status}</p>
-        {error && <p role="alert" className="error">{error}</p>}
-        <p className="note">Данные переживают обновление страницы. Перезапуск API возвращает исходные карточки.</p>
-      </section>
-      <aside className="panel exercise">
-        <p className="eyebrow">Попробуйте сами</p><h2>От симптома к причине</h2>
-        <ol>
-          <li>В рабочем режиме сохраните текст в карточке А и обновите страницу.</li>
-          <li>Откройте DevTools → Network. Найдите запрос сохранения: адрес, метод, тело, ответ.</li>
-          <li>В эксперименте 1 быстро переключите Б → А → Б. Подождите две секунды. Повторите в рабочем режиме.</li>
-          <li>Сравните эксперименты 2 и 3. Есть ли запрос в логах Nest? Дошёл ли он до контроллера?</li>
-        </ol>
-        <details><summary>Инструменты для расследования</summary><p>Network → Timing и заголовок x-request-id. Этот же ID есть в Console и терминале API. Breakpoint: request → getCard / saveCard → CardsService → setText.</p>
-          <p>DNS происходит до HTTP. Здесь браузер обращается к локальному Vite, а имя API при необходимости разрешает сам прокси. Подробная схема — в README.</p></details>
-      </aside>
-    </div>
+    <p className="eyebrow">01 / Карточки</p>
+    <h1>Карточки</h1>
+    <p className="lead">Редактирование и сохранение текстовых карточек.</p>
+    <section className="panel">
+      <div className="panel-heading"><h2>Мои карточки</h2><span className="badge">живой API</span></div>
+      <label htmlFor="cards-mode">Режим</label>
+      <select id="cards-mode" value={mode} disabled={saving} onChange={(event) => {
+        modeVersion.current += 1;
+        setMode(event.target.value);
+      }}>
+        <option value="normal">Обычный режим</option>
+        <option value="race">Эксперимент 1</option>
+        <option value="dns">Эксперимент 2</option>
+        <option value="route">Эксперимент 3</option>
+      </select>
+      <div className="card-picker" aria-label="Выбор карточки">
+        {['a', 'b'].map((id) => <button key={id} type="button" aria-pressed={selected === id}
+          disabled={saving} onClick={() => setSelected(id)}>Карточка {id === 'a' ? 'А' : 'Б'}</button>)}
+      </div>
+      <form onSubmit={(event) => { event.preventDefault(); void save(); }}>
+        <label htmlFor="card-text">Текст карточки</label>
+        <textarea id="card-text" value={text} required maxLength={2000} rows={6}
+          disabled={loading || saving || !card} onChange={(event) => setText(event.target.value)} />
+        <div className="actions"><button className="primary" disabled={loading || saving || !card || !text.trim()}>
+          {saving ? 'Сохраняем…' : 'Сохранить'}</button><span className="muted">{text.length} / 2000</span></div>
+      </form>
+      <p role="status" className="status">{status}</p>
+      {error && <p role="alert" className="error">{error}</p>}
+      <p className="note">Данные переживают обновление страницы. Перезапуск API возвращает исходные карточки.</p>
+    </section>
   </>;
 }

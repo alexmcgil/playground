@@ -26,7 +26,6 @@ export class LabController {
   async getCard(@Param('id') id: string, @Query('slow') slow?: string) {
     if (slow !== undefined && slow !== '1') throw new BadRequestException('slow: только 1');
     const card = this.cards.get(id);
-    // LAB: deterministic response reordering; both client modes use these same delays.
     if (slow === '1') await delay(id === 'a' ? 1400 : 150);
     return card;
   }
@@ -42,7 +41,6 @@ export class LabController {
     const prompt = readText(body, 'prompt');
     const started = performance.now();
     if (mode === 'server') {
-      // LAB: deliberately blocks Node's JS thread, even inside an async method.
       while (performance.now() - started < 2500) Math.sqrt(Math.random());
     } else {
       await delay(2500);
