@@ -1,7 +1,7 @@
 # Playground
 
 Локальное приложение на React + NestJS: карточки и генератор текста.
-Нужны Node.js 24 и pnpm 12.
+Нужны Node.js 24 и pnpm 11.8.0.
 
 ```sh
 pnpm install
